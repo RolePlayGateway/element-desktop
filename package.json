@@ -1,13 +1,13 @@
 {
-  "name": "element-desktop",
-  "productName": "Element",
+  "name": "rpg-chat",
+  "productName": "RPG Chat",
   "main": "src/electron-main.js",
-  "version": "1.7.3",
-  "description": "A feature-rich client for Matrix.org",
-  "author": "Element",
+  "version": "0.2.0-RC5",
+  "description": "Your Gateway to the Virtual World.",
+  "author": "Fabric Labs",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vector-im/riot-desktop"
+    "url": "https://github.com/RolePlayGateway/rpg-desktop"
   },
   "license": "Apache-2.0",
   "files": [],
@@ -20,7 +20,11 @@
     "build:native": "yarn run hak",
     "build32": "electron-builder --ia32",
     "build64": "electron-builder --x64",
-    "build": "electron-builder",
+    "build": "yarn asar-webapp && electron-builder",
+    "build:all": "yarn asar-webapp && electron-builder -wml",
+    "build:linux": "yarn asar-webapp && electron-builder -l",
+    "build:mac": "yarn asar-webapp && electron-builder -m",
+    "build:windows": "yarn asar-webapp && electron-builder -w",
     "docker:setup": "docker build -t riot-desktop-dockerbuild dockerbuild",
     "docker:build:native": "scripts/in-docker.sh yarn run hak",
     "docker:build": "scripts/in-docker.sh yarn run build",
@@ -60,7 +64,7 @@
     "keytar": "^5.6.0"
   },
   "build": {
-    "appId": "im.riot.app",
+    "appId": "com.roleplaygateway.chat",
     "electronVersion": "9.1.2",
     "files": [
       "package.json",
@@ -78,11 +82,20 @@
       "webapp.asar"
     ],
     "linux": {
-      "target": "deb",
+      "target": [
+        {
+          "target": "deb",
+          "arch": "x64"
+        },
+        {
+          "target": "rpm",
+          "arch": "x64"
+        }
+      ],
       "category": "Network;InstantMessaging;Chat",
-      "maintainer": "support@element.io",
+      "maintainer": "support@roleplaygateway.com",
       "desktop": {
-        "StartupWMClass": "element"
+        "StartupWMClass": "rpg"
       }
     },
     "mac": {
@@ -91,7 +104,8 @@
     },
     "win": {
       "target": {
-        "target": "squirrel"
+        "target": "squirrel",
+        "arch": "x64"
       },
       "sign": "scripts/electron_winSign"
     },
@@ -101,6 +115,12 @@
     "afterPack": "scripts/electron_afterPack",
     "afterSign": "scripts/electron_afterSign",
     "protocols": [
+      {
+        "name": "fabric",
+        "schemes": [
+          "fabric"
+        ]
+      },
       {
         "name": "element",
         "schemes": [
